@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATC Simulator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <div id="radar-container">
+            <canvas id="radar"></canvas>
+            <div id="status-panel">
+                <div id="airport-info">Airport: ORD</div>
+                <div id="score-info">Score: 0</div>
+                <div id="time-info">00:00:00</div>
+            </div>
+        </div>
+        <div id="sidebar">
+            <div id="flight-strips">
+                <!-- Flight strips will be generated here -->
+            </div>
+            <div id="controls">
+                <div id="command-history"></div>
+                <input type="text" id="command-input" placeholder="Enter command (e.g. AAL123 C 090)" autocomplete="off">
+            </div>
+        </div>
+    </div>
+    <script src="js/airport.js"></script>
+    <script src="js/aircraft.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
