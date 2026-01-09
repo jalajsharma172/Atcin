@@ -13,6 +13,10 @@ export default function RadarDisplay({ game }: RadarDisplayProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const [selectedAircraftId, setSelectedAircraftId] = useState<string | null>(null);
 
+    // Interaction state refs to avoid re-renders
+    const isDraggingRef = useRef(false);
+    const lastMousePosRef = useRef({ x: 0, y: 0 });
+
     useEffect(() => {
         const canvas = canvasRef.current;
         const container = containerRef.current;
@@ -41,7 +45,25 @@ export default function RadarDisplay({ game }: RadarDisplayProps) {
             game.update(safeDt);
             game.draw(ctx, canvas.width, canvas.height);
 
+            // Update cursor based on mode
+            if (game.showDetails) {
+                canvas.style.cursor = isDraggingRef.current ? 'grabbing' : 'grab';
+            } else {
+                canvas.style.cursor = 'crosshair';
+            }
+
             animationId = requestAnimationFrame(loop);
+
+            // Update cursor style logic
+            const updateCursor = () => {
+                if (game.showDetails) {
+                    if (canvas) canvas.style.cursor = isDraggingRef.current ? 'grabbing' : 'grab';
+                } else {
+                    if (canvas) canvas.style.cursor = 'default';
+                }
+            };
+            // Hook into the loop for cursor updates or just verify periodically? 
+            // Better to check on toggle. For now, let's keep it simple.
         };
 
         animationId = requestAnimationFrame(loop);
@@ -69,12 +91,49 @@ export default function RadarDisplay({ game }: RadarDisplayProps) {
             }
         };
 
+        const handleWheel = (e: WheelEvent) => {
+            if (game.showDetails) {
+                e.preventDefault();
+                game.handleZoom(e.deltaY);
+            }
+        };
+
+        const handleMouseDown = (e: MouseEvent) => {
+            if (game.showDetails) {
+                isDraggingRef.current = true;
+                lastMousePosRef.current = { x: e.clientX, y: e.clientY };
+                if (canvas) canvas.style.cursor = 'grabbing';
+            }
+        };
+
+        const handleMouseMove = (e: MouseEvent) => {
+            if (isDraggingRef.current && game.showDetails) {
+                const dx = e.clientX - lastMousePosRef.current.x;
+                const dy = e.clientY - lastMousePosRef.current.y;
+                game.handlePan(dx, dy);
+                lastMousePosRef.current = { x: e.clientX, y: e.clientY };
+            }
+        };
+
+        const handleMouseUp = () => {
+            isDraggingRef.current = false;
+            if (canvas && game.showDetails) canvas.style.cursor = 'grab';
+        };
+
         canvas.addEventListener('click', handleClick);
+        canvas.addEventListener('wheel', handleWheel);
+        canvas.addEventListener('mousedown', handleMouseDown);
+        window.addEventListener('mousemove', handleMouseMove);
+        window.addEventListener('mouseup', handleMouseUp);
 
         return () => {
             window.removeEventListener('resize', resize);
             cancelAnimationFrame(animationId);
             canvas.removeEventListener('click', handleClick);
+            canvas.removeEventListener('wheel', handleWheel);
+            canvas.removeEventListener('mousedown', handleMouseDown);
+            window.removeEventListener('mousemove', handleMouseMove);
+            window.removeEventListener('mouseup', handleMouseUp);
         };
     }, [game]);
 

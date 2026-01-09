@@ -1,0 +1,30 @@
+{
+    "B737": {
+        "speed_cruise": 250,
+        "speed_landing": 140,
+        "rate_climb": 8,
+        "rate_turn": 3,
+        "wake_category": "M"
+    },
+    "A320": {
+        "speed_cruise": 250,
+        "speed_landing": 135,
+        "rate_climb": 8,
+        "rate_turn": 3,
+        "wake_category": "M"
+    },
+    "B747": {
+        "speed_cruise": 280,
+        "speed_landing": 150,
+        "rate_climb": 6,
+        "rate_turn": 2,
+        "wake_category": "H"
+    },
+    "C172": {
+        "speed_cruise": 100,
+        "speed_landing": 60,
+        "rate_climb": 4,
+        "rate_turn": 4,
+        "wake_category": "L"
+    }
+}

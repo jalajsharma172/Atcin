@@ -1,0 +1,345 @@
+{
+    "code": "IGIA",
+    "name": "Indira Gandhi International",
+    "elevation": 668,
+    "fixes": {
+        "ALFIX": {
+            "x": 30,
+            "y": 0
+        },
+        "ALNEAR": {
+            "x": 10,
+            "y": 0.5
+        },
+        "ALFINAL": {
+            "x": 20,
+            "y": 0.5
+        },
+        "BRFIX": {
+            "x": -30,
+            "y": 1.3
+        },
+        "BRFINAL": {
+            "x": -20,
+            "y": 1.3
+        },
+        "BRNEAR": {
+            "x": -10,
+            "y": 1.3
+        },
+        "ENEAR": {
+            "x": 10,
+            "y": -1.58
+        },
+        "EFINAL": {
+            "x": 20,
+            "y": -1.58
+        },
+        "EFIX": {
+            "x": 30,
+            "y": -1.58
+        },
+        "FFIX": {
+            "x": -30,
+            "y": -1.58
+        },
+        "FNEAR": {
+            "x": -10,
+            "y": -1.58
+        },
+        "FFINAL": {
+            "x": -20,
+            "y": -1.58
+        },
+        "GFIX": {
+            "x": 30,
+            "y": -2.88
+        },
+        "GNEAR": {
+            "x": 10,
+            "y": -2.88
+        },
+        "GFINAL": {
+            "x": 20,
+            "y": -2.88
+        },
+        "HFIX": {
+            "x": -30,
+            "y": -2.88
+        },
+        "HFINAL": {
+            "x": -20,
+            "y": -2.88
+        },
+        "HNEAR": {
+            "x": -10,
+            "y": -2.88
+        },
+        "CFIX": {
+            "x": 28,
+            "y": -11
+        },
+        "CFINAL": {
+            "x": 19,
+            "y": -6.5
+        },
+        "CNEAR": {
+            "x": 10,
+            "y": -2
+        },
+        "DNEAR": {
+            "x": -8,
+            "y": 6.1
+        },
+        "DFIX": {
+            "x": -27.5,
+            "y": 12.0
+        },
+        "DFINAL": {
+            "x": -18,
+            "y": 9.0
+        }
+    },
+    "runways": [
+        {
+            "name": "A",
+            "x": -1.5,
+            "y": 1.14,
+            "heading": 280,
+            "length": 8,
+            "endX": 4.56,
+            "endY": 1.3
+        },
+        {
+            "name": "B",
+            "x": 4.56,
+            "y": 1.3,
+            "heading": 100,
+            "length": 8,
+            "endX": -1.5,
+            "endY": 1.14
+        },
+        {
+            "name": "C",
+            "x": -1.64,
+            "y": 2.36,
+            "heading": 280,
+            "length": 8,
+            "endX": 3.84,
+            "endY": 4.48
+        },
+        {
+            "name": "D",
+            "x": 3.84,
+            "y": 4.48,
+            "heading": 100,
+            "length": 8,
+            "endX": -1.64,
+            "endY": 2.36
+        },
+        {
+            "name": "E",
+            "x": -1.4,
+            "y": -1.58,
+            "heading": 280,
+            "length": 8,
+            "endX": 4.76,
+            "endY": -1.52
+        },
+        {
+            "name": "F",
+            "x": 4.76,
+            "y": -1.52,
+            "heading": 100,
+            "length": 8,
+            "endX": -1.4,
+            "endY": -1.58
+        },
+        {
+            "name": "G",
+            "x": -1.28,
+            "y": -2.88,
+            "heading": 280,
+            "length": 8,
+            "endX": 4.92,
+            "endY": -2.82
+        },
+        {
+            "name": "H",
+            "x": 4.92,
+            "y": -2.82,
+            "heading": 100,
+            "length": 8,
+            "endX": -1.28,
+            "endY": -2.88
+        }
+    ],
+    "taxiwayNodes": {
+        "TW_A1": {
+            "x": 0.2,
+            "y": 1.4
+        },
+        "TW_A2": {
+            "x": 0.8,
+            "y": 1.6
+        },
+        "TW_B1": {
+            "x": 1.4,
+            "y": 1.9
+        },
+        "TW_C1": {
+            "x": 1.9,
+            "y": 2.3
+        },
+        "T1_ENTRY": {
+            "x": 0.5,
+            "y": 0.8
+        },
+        "T2_ENTRY": {
+            "x": 1.8,
+            "y": 0.6
+        },
+        "T3_ENTRY": {
+            "x": 3.2,
+            "y": 0.5
+        },
+        "RW_A_EXIT1": {
+            "x": 1.2,
+            "y": 1.25
+        },
+        "RW_C_EXIT1": {
+            "x": 2.6,
+            "y": 4.1
+        }
+    },
+    "taxiways": [
+        {
+            "name": "A",
+            "type": "taxiway",
+            "from": "RW_A_EXIT1",
+            "to": "TW_A1",
+            "width": 0.05
+        },
+        {
+            "name": "A",
+            "from": "TW_A1",
+            "to": "TW_A2",
+            "width": 0.05
+        },
+        {
+            "name": "B",
+            "from": "TW_A2",
+            "to": "TW_B1",
+            "width": 0.05
+        },
+        {
+            "name": "C",
+            "from": "TW_B1",
+            "to": "TW_C1",
+            "width": 0.05
+        },
+        {
+            "name": "T1_LINK",
+            "type": "apron_link",
+            "from": "TW_A1",
+            "to": "T1_ENTRY"
+        },
+        {
+            "name": "T2_LINK",
+            "from": "TW_B1",
+            "to": "T2_ENTRY"
+        },
+        {
+            "name": "T3_LINK",
+            "from": "TW_C1",
+            "to": "T3_ENTRY"
+        }
+    ],
+    "terminals": [
+        {
+            "id": "T1",
+            "name": "Terminal 1",
+            "position": {
+                "x": 0.3,
+                "y": 0.5
+            },
+            "apron": {
+                "polygon": [
+                    {
+                        "x": 0.1,
+                        "y": 0.3
+                    },
+                    {
+                        "x": 0.6,
+                        "y": 0.3
+                    },
+                    {
+                        "x": 0.6,
+                        "y": 0.8
+                    },
+                    {
+                        "x": 0.1,
+                        "y": 0.8
+                    }
+                ]
+            },
+            "gates": [
+                {
+                    "id": "T1_G1",
+                    "x": 0.2,
+                    "y": 0.6
+                },
+                {
+                    "id": "T1_G2",
+                    "x": 0.4,
+                    "y": 0.6
+                }
+            ]
+        },
+        {
+            "id": "T2",
+            "name": "Terminal 2",
+            "position": {
+                "x": 1.6,
+                "y": 0.4
+            },
+            "gates": [
+                {
+                    "id": "T2_G1",
+                    "x": 1.5,
+                    "y": 0.5
+                },
+                {
+                    "id": "T2_G2",
+                    "x": 1.8,
+                    "y": 0.5
+                }
+            ]
+        },
+        {
+            "id": "T3",
+            "name": "Terminal 3",
+            "position": {
+                "x": 3.1,
+                "y": 0.4
+            },
+            "gates": [
+                {
+                    "id": "T3_G1",
+                    "x": 3.0,
+                    "y": 0.5
+                },
+                {
+                    "id": "T3_G2",
+                    "x": 3.3,
+                    "y": 0.5
+                }
+            ]
+        }
+    ],
+    "groundRules": {
+        "maxTaxiSpeed": 25,
+        "apronSpeed": 10,
+        "holdShortDistance": 0.03
+    }
+}

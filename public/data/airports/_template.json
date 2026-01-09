@@ -1,0 +1,44 @@
+{
+    "code": "TEMPLATE",
+    "name": "Airport Name Here",
+    "elevation": 0,
+    "runways": [
+        {
+            "name": "27L",
+            "x": -5,
+            "y": 0,
+            "heading": 270,
+            "length": 10,
+            "endX": 5,
+            "endY": 0
+        },
+        {
+            "name": "09R",
+            "x": 5,
+            "y": 0,
+            "heading": 90,
+            "length": 10,
+            "endX": -5,
+            "endY": 0
+        }
+    ],
+    "fixes": {
+        "ENTRY1": {
+            "x": 30,
+            "y": 0
+        },
+        "ENTRY2": {
+            "x": -30,
+            "y": 0
+        },
+        "ENTRY3": {
+            "x": 0,
+            "y": 30
+        },
+        "ENTRY4": {
+            "x": 0,
+            "y": -30
+        }
+    },
+    "terminals": []
+}

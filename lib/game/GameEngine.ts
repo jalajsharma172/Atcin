@@ -7,6 +7,8 @@ export class GameEngine {
     lastTime: number;
     scale: number;
     center: { x: number; y: number };
+    width: number = 0;
+    height: number = 0;
     score: number;
     spawnTimer: number;
 
@@ -16,20 +18,56 @@ export class GameEngine {
     onScoreUpdated?: (score: number) => void;
     onLog?: (msg: string) => void;
 
+    aircraftTypes: Record<string, any>;
+
     constructor() {
-        this.airport = new Airport();
+        this.airport = new Airport(); // Starts empty/loading
         this.aircrafts = [];
+        this.aircraftTypes = {};
         this.lastTime = 0;
         this.scale = 15; // Pixels per mile
-        this.center = { x: 0, y: 0 }; // Will be updated on resize
+        this.center = { x: 0, y: 0 };
         this.score = 0;
-        this.spawnTimer = 2; // Start spawning quickly
+        this.spawnTimer = 2;
+    }
 
-        // Initial Traffic
-        this.spawnAircraft();
+    async init(airportCode: string) {
+        try {
+            // Load Airport
+            const airportRes = await fetch(`/data/airports/${airportCode}.json`);
+            if (!airportRes.ok) {
+                this.log(`❌ Airport "${airportCode}" is currently not available`);
+                this.log('Please select a different airport from the homepage');
+                return;
+            }
+            const airportData = await airportRes.json();
+            this.airport = new Airport(airportData);
+            this.log(`✅ Loaded airport: ${airportData.name}`);
+
+            // Load Aircraft Specs
+            const aircraftRes = await fetch('/data/aircraft.json');
+            if (aircraftRes.ok) {
+                this.aircraftTypes = await aircraftRes.json();
+                this.log('✅ Loaded aircraft specs');
+            }
+
+            // Start Traffic
+            this.spawnAircraft(); // Regular spawn
+
+            // Force spawn a few ground aircraft immediately so detailed view isn't empty
+            for (let i = 0; i < 2; i++) {
+                this.spawnDeparture();
+            }
+        } catch (e) {
+            console.error(e);
+            this.log(`❌ Error loading airport "${airportCode}"`);
+            this.log('This airport is currently not available');
+        }
     }
 
     resize(width: number, height: number) {
+        this.width = width;
+        this.height = height;
         this.center = { x: width / 2, y: height / 2 };
     }
 
@@ -40,26 +78,43 @@ export class GameEngine {
 
     spawnAircraft() {
         const isArrival = Math.random() > 0.3; // 70% chance of arrival
-        const id = (Math.random() > 0.5 ? 'UAL' : 'AAL') + Math.floor(Math.random() * 900 + 100);
-
         if (isArrival) {
-            // Spawn at edge (50 miles)
-            const angle = Math.random() * Math.PI * 2;
-            const x = Math.cos(angle) * 50;
-            const y = Math.sin(angle) * 50;
-            // Heading towards center
-            let heading = (Math.atan2(-y, -x) * 180 / Math.PI) + 90;
-            if (heading < 0) heading += 360;
-
-            // Random altitude 5000-10000
-            const alt = 50 + Math.floor(Math.random() * 50);
-
-            this.addAircraft(new Aircraft(id, 'B737', x, y, heading, alt, 250, true));
+            this.spawnArrival();
         } else {
-            // Spawn at runway
-            const rwy = this.airport.runways[Math.floor(Math.random() * this.airport.runways.length)];
-            this.addAircraft(new Aircraft(id, 'A320', rwy.x, rwy.y, rwy.heading, 0, 0, false));
+            this.spawnDeparture();
         }
+    }
+
+    spawnArrival() {
+        const id = 'UAL' + Math.floor(Math.random() * 900 + 100);
+        const type = 'B737';
+        const stats = this.aircraftTypes[type];
+
+        // Spawn at edge (50 miles)
+        const angle = Math.random() * Math.PI * 2;
+        const x = Math.cos(angle) * 50;
+        const y = Math.sin(angle) * 50;
+
+        // Heading towards center
+        let heading = (Math.atan2(-y, -x) * 180 / Math.PI) + 90;
+        if (heading < 0) heading += 360;
+
+        // Random altitude 5000-10000
+        const alt = 50 + Math.floor(Math.random() * 50);
+
+        this.addAircraft(new Aircraft(id, type, x, y, heading, alt, 250, true, stats));
+    }
+
+    spawnDeparture() {
+        if (this.airport.runways.length === 0) return;
+
+        const id = 'AAL' + Math.floor(Math.random() * 900 + 100);
+        const type = 'A320';
+        const stats = this.aircraftTypes[type];
+
+        // Spawn at runway start
+        const rwy = this.airport.runways[Math.floor(Math.random() * this.airport.runways.length)];
+        this.addAircraft(new Aircraft(id, type, rwy.x, rwy.y, rwy.heading, 0, 0, false, stats));
     }
 
     update(dt: number) {
@@ -124,26 +179,86 @@ export class GameEngine {
         }
     }
 
+    showDetails: boolean = false;
+    savedState: { scale: number, center: { x: number, y: number } } | null = null;
+
+    toggleDetails() {
+        this.showDetails = !this.showDetails;
+
+        if (this.showDetails) {
+            // Save current radar state
+            this.savedState = {
+                scale: this.scale,
+                center: { ...this.center }
+            };
+
+            // Zoom in for detailed view (e.g., 8x default)
+            // Center on airport (0,0 world coords -> canvas center)
+            this.scale = 120; // Much larger scale for airport details
+            this.center = { x: this.width / 2, y: this.height / 2 };
+        } else {
+            // Restore radar state
+            if (this.savedState) {
+                this.scale = this.savedState.scale;
+                this.center = this.savedState.center;
+            } else {
+                this.scale = 15;
+                this.center = { x: this.width / 2, y: this.height / 2 };
+            }
+        }
+
+        return this.showDetails;
+    }
+
+    handlePan(dx: number, dy: number) {
+        if (!this.showDetails) return;
+
+        // Inverted controls for natural drag feel (moving mouse left moves view right)
+        // Adjust sensitivity based on scale
+        this.center.x += dx;
+        this.center.y += dy;
+    }
+
+    handleZoom(delta: number) {
+        if (!this.showDetails) return;
+
+        const zoomSpeed = 0.1;
+        const oldScale = this.scale;
+
+        // Apply zoom
+        this.scale -= delta * zoomSpeed;
+
+        // Limits
+        this.scale = Math.max(20, Math.min(this.scale, 300));
+    }
+
     draw(ctx: CanvasRenderingContext2D, width: number, height: number) {
         // Clear background
-        ctx.fillStyle = '#001100';
+        ctx.fillStyle = this.showDetails ? '#f0f3f5' : '#001100'; // Light background for detail map, Dark for radar
         ctx.fillRect(0, 0, width, height);
 
         // Draw Airport
-        this.airport.draw(ctx, this.scale, this.center);
+        this.airport.draw(ctx, this.scale, this.center, this.showDetails);
 
-        // Draw Range Rings (every 10 miles)
-        ctx.strokeStyle = '#003300';
-        ctx.lineWidth = 1;
-        for (let r = 10; r <= 50; r += 10) {
-            ctx.beginPath();
-            ctx.arc(this.center.x, this.center.y, r * this.scale, 0, Math.PI * 2);
-            ctx.stroke();
+        // Draw Range Rings (every 10 miles) - Only in Radar View
+        if (!this.showDetails) {
+            ctx.strokeStyle = '#003300';
+            ctx.lineWidth = 1;
+            for (let r = 10; r <= 50; r += 10) {
+                ctx.beginPath();
+                ctx.arc(this.center.x, this.center.y, r * this.scale, 0, Math.PI * 2);
+                ctx.stroke();
+            }
         }
 
         // Draw Aircraft
         this.aircrafts.forEach(ac => {
-            ac.draw(ctx, this.scale, this.center);
+            // In Airport View, only show aircraft that are on the ground
+            if (this.showDetails && !ac.isOnGround) return;
+            // In Radar View (showDetails=false), show all aircraft (standard behavior)
+
+            ac.draw(ctx, this.scale, this.center, this.showDetails);
+
             if (ac.violation) {
                 let px = this.center.x + ac.x * this.scale;
                 let py = this.center.y - ac.y * this.scale;

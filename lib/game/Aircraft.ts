@@ -12,6 +12,14 @@ export interface FlightStripData {
     history: { x: number, y: number }[];
 }
 
+export interface AircraftStats {
+    speed_cruise: number;
+    speed_landing: number;
+    rate_climb: number;
+    rate_turn: number;
+    wake_category?: string;
+}
+
 export class Aircraft {
     id: string;
     type: string;
@@ -37,7 +45,9 @@ export class Aircraft {
     history: { x: number; y: number }[];
     violation: boolean = false;
 
-    constructor(id: string, type: string, x: number, y: number, heading: number, altitude: number, speed: number, isArrival: boolean) {
+    stats: AircraftStats;
+
+    constructor(id: string, type: string, x: number, y: number, heading: number, altitude: number, speed: number, isArrival: boolean, stats?: AircraftStats) {
         this.id = id;
         this.type = type;
         this.x = x;
@@ -46,6 +56,13 @@ export class Aircraft {
         this.altitude = altitude;
         this.speed = speed;
         this.isArrival = isArrival;
+
+        this.stats = stats || {
+            speed_cruise: 250,
+            speed_landing: 140,
+            rate_climb: 8,
+            rate_turn: 3
+        };
 
         this.targetHeading = heading;
         this.targetAltitude = altitude;
@@ -94,8 +111,8 @@ export class Aircraft {
         if (this.isOnGround && this.targetAltitude > 0) {
             this.isTakingOff = true;
             this.isOnGround = false;
-            this.speed = 140;
-            this.targetSpeed = 250;
+            this.speed = this.stats.speed_landing; // Rotate speed
+            this.targetSpeed = this.stats.speed_cruise;
         }
     }
 
@@ -104,7 +121,7 @@ export class Aircraft {
 
         // Speed Logic
         if (this.speed !== this.targetSpeed) {
-            const accel = 2 * dt;
+            const accel = 2 * dt; // Keep accel constant/generic for now
             if (Math.abs(this.targetSpeed - this.speed) < accel) {
                 this.speed = this.targetSpeed;
             } else {
@@ -137,10 +154,37 @@ export class Aircraft {
                 this.targetSpeed = 0;
             }
 
-            if (dist < 10 && (headingDiff < 10 || headingDiff > 350)) {
-                this.targetHeading = this.landingRunway.heading;
-                if (dist < 5) this.targetAltitude = 0;
+            if (dist < 15) {
+                // Inside Terminal Area
+                const aligned = headingDiff < 40 || dist < 3;
+
+                if (aligned) {
+                    // KEY FIX: Do NOT lock to runway heading immediately. 
+                    // Continue homing (flying towards threshold) to close any lateral gap.
+                    // Only lock heading if we are extremely close (flare).
+                    if (dist < 1) {
+                        this.targetHeading = this.landingRunway.heading;
+                    } else {
+                        this.targetHeading = bearing;
+                    }
+
+                    // Glideslope logic: 300ft/nm = 3 degrees. 
+                    // If we are aligned, descend.
+                    if (dist < 12) {
+                        this.targetAltitude = 0;
+                    }
+                } else {
+                    // Not aligned yet, keep homing to threshold
+                    this.targetHeading = bearing;
+
+                    // If very close but not aligned, force alignment to avoid circling
+                    if (dist < 2) {
+                        this.targetHeading = this.landingRunway.heading;
+                        this.targetAltitude = 0;
+                    }
+                }
             } else {
+                // Far out: Homing
                 this.targetHeading = bearing;
             }
         }
@@ -151,7 +195,7 @@ export class Aircraft {
             if (diff > 180) diff -= 360;
             if (diff < -180) diff += 360;
 
-            const turnRate = 3 * dt;
+            const turnRate = this.stats.rate_turn * dt;
 
             if (Math.abs(diff) < turnRate) {
                 this.heading = this.targetHeading;
@@ -165,7 +209,7 @@ export class Aircraft {
 
         // Altitude Logic
         if (this.altitude !== this.targetAltitude) {
-            let rate = 8 * dt;
+            let rate = this.stats.rate_climb * dt;
             if (this.expedite) rate *= 2;
 
             if (Math.abs(this.targetAltitude - this.altitude) < rate) {
@@ -192,28 +236,37 @@ export class Aircraft {
         }
     }
 
-    draw(ctx: CanvasRenderingContext2D, scale: number, center: { x: number, y: number }) {
+    draw(ctx: CanvasRenderingContext2D, scale: number, center: { x: number, y: number }, showDetails: boolean = false) {
         let px = center.x + this.x * scale;
         let py = center.y - this.y * scale;
 
-        // Trail
-        ctx.strokeStyle = '#0f0';
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        if (this.history.length > 0) {
-            ctx.moveTo(px, py);
-            for (let p of this.history) {
-                ctx.lineTo(center.x + p.x * scale, center.y - p.y * scale);
+        // Trail - Hide in detailed view or if too short
+        if (!showDetails) {
+            ctx.strokeStyle = '#0f0';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            if (this.history.length > 0) {
+                ctx.moveTo(px, py);
+                for (let p of this.history) {
+                    ctx.lineTo(center.x + p.x * scale, center.y - p.y * scale);
+                }
             }
+            ctx.stroke();
         }
-        ctx.stroke();
 
         // Symbol
         ctx.save();
         ctx.translate(px, py);
         ctx.rotate((this.heading - 90) * Math.PI / 180);
 
-        ctx.fillStyle = this.isArrival ? '#ffcc00' : '#00ccff';
+        // Darker colors for light background in detailed view
+        if (showDetails) {
+            ctx.fillStyle = this.isArrival ? '#d35400' : '#2980b9'; // Darker Orange / Blue
+            ctx.scale(2, 2); // Double size for detailed view
+        } else {
+            ctx.fillStyle = this.isArrival ? '#ffcc00' : '#00ccff';
+        }
+
         ctx.beginPath();
         ctx.moveTo(6, 0);
         ctx.lineTo(-4, 4);
@@ -222,7 +275,7 @@ export class Aircraft {
         ctx.restore();
 
         // Data Block
-        ctx.fillStyle = '#0f0';
+        ctx.fillStyle = showDetails ? '#333' : '#0f0'; // Black text for detailed view
         ctx.font = '11px monospace';
         ctx.fillText(this.id, px + 10, py - 10);
 
