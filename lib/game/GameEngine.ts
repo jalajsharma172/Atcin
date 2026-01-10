@@ -25,7 +25,7 @@ export class GameEngine {
         this.aircrafts = [];
         this.aircraftTypes = {};
         this.lastTime = 0;
-        this.scale = 15; // Pixels per mile
+        this.scale = 35; // Pixels per mile
         this.center = { x: 0, y: 0 };
         this.score = 0;
         this.spawnTimer = 2;
@@ -112,9 +112,11 @@ export class GameEngine {
         const type = 'A320';
         const stats = this.aircraftTypes[type];
 
-        // Spawn at runway start
+        // Spawn at runway start - support both new and legacy formats
         const rwy = this.airport.runways[Math.floor(Math.random() * this.airport.runways.length)];
-        this.addAircraft(new Aircraft(id, type, rwy.x, rwy.y, rwy.heading, 0, 0, false, stats));
+        const spawnX = rwy.threshold?.x ?? rwy.x ?? 0;
+        const spawnY = rwy.threshold?.y ?? rwy.y ?? 0;
+        this.addAircraft(new Aircraft(id, type, spawnX, spawnY, rwy.heading, 0, 0, false, stats));
     }
 
     update(dt: number) {
@@ -180,6 +182,7 @@ export class GameEngine {
     }
 
     showDetails: boolean = false;
+    transparentMode: boolean = true;
     savedState: { scale: number, center: { x: number, y: number } } | null = null;
 
     toggleDetails() {
@@ -202,7 +205,7 @@ export class GameEngine {
                 this.scale = this.savedState.scale;
                 this.center = this.savedState.center;
             } else {
-                this.scale = 15;
+                this.scale = 35;
                 this.center = { x: this.width / 2, y: this.height / 2 };
             }
         }
@@ -234,11 +237,15 @@ export class GameEngine {
 
     draw(ctx: CanvasRenderingContext2D, width: number, height: number) {
         // Clear background
-        ctx.fillStyle = this.showDetails ? '#f0f3f5' : '#001100'; // Light background for detail map, Dark for radar
+        if (this.showDetails) {
+            ctx.fillStyle = this.transparentMode ? '#0a1929' : '#f0f3f5';
+        } else {
+            ctx.fillStyle = '#001100';
+        }
         ctx.fillRect(0, 0, width, height);
 
         // Draw Airport
-        this.airport.draw(ctx, this.scale, this.center, this.showDetails);
+        this.airport.draw(ctx, this.scale, this.center, this.showDetails, this.transparentMode);
 
         // Draw Range Rings (every 10 miles) - Only in Radar View
         if (!this.showDetails) {

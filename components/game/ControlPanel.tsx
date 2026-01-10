@@ -197,21 +197,21 @@ export default function ControlPanel({ game }: ControlPanelProps) {
 
     // Handle Toggle
     const toggleVoice = useCallback(() => {
+        // TEMPORARY DISABLE LISTENING
+        return;
+        /*
         setIsListening(prev => !prev);
         if (!isListening) {
             setTimeout(() => inputRef.current?.focus(), 100);
         }
+        */
     }, [isListening]);
 
     // Global KeyDown for Shortcuts
     useEffect(() => {
         const handleGlobalKeyDown = (e: KeyboardEvent) => {
             // Global Hotkeys
-            if (e.key === '-') {
-                e.preventDefault();
-                toggleVoice();
-                return;
-            }
+
 
             // Only process others if listening
             if (!isListening) return;
@@ -281,19 +281,11 @@ export default function ControlPanel({ game }: ControlPanelProps) {
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
                     placeholder={isListening ? "Listening... (+ reset, - toggle, * format)" : "Enter command"}
-                    className={`flex-1 bg-black border ${isListening ? 'border-red-500' : 'border-green-500'} ${isListening ? 'text-red-500' : 'text-green-500'} p-2 font-mono uppercase focus:outline-none focus:border-white transition-colors duration-300`}
+                    className={`flex-1 min-w-0 bg-black border ${isListening ? 'border-red-500' : 'border-green-500'} ${isListening ? 'text-red-500' : 'text-green-500'} p-2 font-mono uppercase focus:outline-none focus:border-white transition-colors duration-300`}
                     autoComplete="off"
                     onKeyDown={handleInputKeyDown}
                 />
-                <button
-                    onClick={toggleVoice}
-                    className={`px-4 py-2 font-mono font-bold transition-all duration-300 ${isListening
-                        ? 'bg-red-600 text-white hover:bg-red-700 animate-pulse'
-                        : 'bg-green-600 text-black hover:bg-green-500'
-                        }`}
-                >
-                    {isListening ? 'MIC ON' : 'MIC OFF'}
-                </button>
+
             </div>
         </div>
     );

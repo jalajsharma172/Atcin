@@ -143,6 +143,21 @@ export default function RadarDisplay({ game }: RadarDisplayProps) {
             <div className="absolute top-2 left-2 bg-black/70 p-2 border border-green-500 text-green-500 font-mono text-sm pointer-events-none">
                 <div>Airport: {game.airport.name}</div>
                 <div>Scores are tracked internally</div>
+                {game.showDetails && (
+                    <div className="mt-2 pointer-events-auto">
+                        <label className="flex items-center space-x-2 cursor-pointer">
+                            <input
+                                type="checkbox"
+                                checked={game.transparentMode}
+                                onChange={(e) => {
+                                    game.transparentMode = e.target.checked;
+                                }}
+                                className="form-checkbox h-4 w-4 text-green-500 bg-black border-green-500 focus:ring-green-500 focus:ring-offset-black"
+                            />
+                            <span>Transparent Mode</span>
+                        </label>
+                    </div>
+                )}
             </div>
             <HeadingCompass
                 onHeadingSelect={(heading) => {

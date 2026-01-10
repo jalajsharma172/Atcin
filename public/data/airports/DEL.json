@@ -1,0 +1,363 @@
+{
+    "code": "DEL",
+    "name": "DELDELDELDELDELDEL ",
+    "elevation": 777,
+    "fixes": {
+        "D27_FIX": {
+            "x": 20,
+            "y": 5
+        },
+        "D27_FINAL": {
+            "x": 12,
+            "y": 5
+        },
+        "D09_FIX": {
+            "x": -20,
+            "y": 5
+        },
+        "D09_FINAL": {
+            "x": -12,
+            "y": 5
+        },
+        "D28_FIX": {
+            "x": 22,
+            "y": 1
+        },
+        "D28_FINAL": {
+            "x": 14,
+            "y": 1
+        },
+        "D10_FIX": {
+            "x": -22,
+            "y": 1
+        },
+        "D10_FINAL": {
+            "x": -14,
+            "y": 1
+        },
+        "D29_FIX": {
+            "x": 20,
+            "y": -5
+        },
+        "D29_FINAL": {
+            "x": 12,
+            "y": -5
+        },
+        "D11_FIX": {
+            "x": -20,
+            "y": -5
+        },
+        "D11_FINAL": {
+            "x": -12,
+            "y": -5
+        }
+    },
+    "runways": [
+        {
+            "name": "27",
+            "x": 8,
+            "y": 5,
+            "heading": 270,
+            "length": 16,
+            "endX": -8,
+            "endY": 5
+        },
+        {
+            "name": "09",
+            "x": -8,
+            "y": 5,
+            "heading": 90,
+            "length": 16,
+            "endX": 8,
+            "endY": 5
+        },
+        {
+            "name": "28",
+            "x": 9,
+            "y": 1,
+            "heading": 270,
+            "length": 18,
+            "endX": -9,
+            "endY": 1
+        },
+        {
+            "name": "10",
+            "x": -9,
+            "y": 1,
+            "heading": 90,
+            "length": 18,
+            "endX": 9,
+            "endY": 1
+        },
+        {
+            "name": "29",
+            "x": 9,
+            "y": -5,
+            "heading": 270,
+            "length": 18,
+            "endX": -9,
+            "endY": -5
+        },
+        {
+            "name": "11",
+            "x": -9,
+            "y": -5,
+            "heading": 90,
+            "length": 18,
+            "endX": 9,
+            "endY": -5
+        }
+    ],
+    "taxiwayNodes": {
+        "T1_A": {
+            "x": -4,
+            "y": 4
+        },
+        "T1_B": {
+            "x": -2,
+            "y": 4
+        },
+        "T1_GATE": {
+            "x": -3,
+            "y": 3.5
+        },
+        "T3_A": {
+            "x": -2,
+            "y": -2
+        },
+        "T3_B": {
+            "x": 2,
+            "y": -2
+        },
+        "T3_GATE_L": {
+            "x": -1,
+            "y": -2.5
+        },
+        "T3_GATE_R": {
+            "x": 1,
+            "y": -2.5
+        },
+        "T2_A": {
+            "x": 3,
+            "y": -1
+        },
+        "T2_GATE": {
+            "x": 3.5,
+            "y": -1.5
+        },
+        "RW27_EXIT": {
+            "x": -4,
+            "y": 5
+        },
+        "RW28_EXIT": {
+            "x": -2,
+            "y": 1
+        },
+        "RW29_EXIT": {
+            "x": -2,
+            "y": -5
+        },
+        "RW10_EXIT": {
+            "x": 2,
+            "y": 1
+        },
+        "RW11_EXIT": {
+            "x": 2,
+            "y": -5
+        }
+    },
+    "taxiways": [
+        {
+            "name": "T1_LINK_A",
+            "from": "RW27_EXIT",
+            "to": "T1_A",
+            "width": 0.05
+        },
+        {
+            "name": "T1_APRON",
+            "from": "T1_A",
+            "to": "T1_B",
+            "width": 0.1
+        },
+        {
+            "name": "T1_G_LINK",
+            "from": "T1_A",
+            "to": "T1_GATE",
+            "width": 0.05
+        },
+        {
+            "name": "T3_LINK_N",
+            "from": "RW28_EXIT",
+            "to": "T3_A",
+            "width": 0.05
+        },
+        {
+            "name": "T3_LINK_S",
+            "from": "RW29_EXIT",
+            "to": "T3_A",
+            "width": 0.05
+        },
+        {
+            "name": "T3_APRON",
+            "from": "T3_A",
+            "to": "T3_B",
+            "width": 0.1
+        },
+        {
+            "name": "T3_G_LINK1",
+            "from": "T3_A",
+            "to": "T3_GATE_L",
+            "width": 0.05
+        },
+        {
+            "name": "T3_G_LINK2",
+            "from": "T3_B",
+            "to": "T3_GATE_R",
+            "width": 0.05
+        },
+        {
+            "name": "T2_LINK",
+            "from": "RW10_EXIT",
+            "to": "T2_A",
+            "width": 0.05
+        },
+        {
+            "name": "T2_G_LINK",
+            "from": "T2_A",
+            "to": "T2_GATE",
+            "width": 0.05
+        }
+    ],
+    "terminals": [
+        {
+            "id": "T1",
+            "name": "Terminal 1 (Domestic)",
+            "position": {
+                "x": -3,
+                "y": 3
+            },
+            "gates": [
+                {
+                    "id": "T1_1",
+                    "x": -3.2,
+                    "y": 3.2
+                },
+                {
+                    "id": "T1_2",
+                    "x": -2.8,
+                    "y": 3.2
+                }
+            ],
+            "apron": {
+                "polygon": [
+                    {
+                        "x": -4.2,
+                        "y": 2.5
+                    },
+                    {
+                        "x": -1.8,
+                        "y": 2.5
+                    },
+                    {
+                        "x": -1.8,
+                        "y": 4.2
+                    },
+                    {
+                        "x": -4.2,
+                        "y": 4.2
+                    }
+                ]
+            }
+        },
+        {
+            "id": "T3",
+            "name": "Terminal 3 (Intl/Dom)",
+            "position": {
+                "x": 0,
+                "y": -2
+            },
+            "gates": [
+                {
+                    "id": "T3_1",
+                    "x": -1,
+                    "y": -2.5
+                },
+                {
+                    "id": "T3_2",
+                    "x": 0,
+                    "y": -2.5
+                },
+                {
+                    "id": "T3_3",
+                    "x": 1,
+                    "y": -2.5
+                }
+            ],
+            "apron": {
+                "polygon": [
+                    {
+                        "x": -2.5,
+                        "y": -3
+                    },
+                    {
+                        "x": 2.5,
+                        "y": -3
+                    },
+                    {
+                        "x": 2.5,
+                        "y": -1
+                    },
+                    {
+                        "x": -2.5,
+                        "y": -1
+                    }
+                ]
+            }
+        },
+        {
+            "id": "T2",
+            "name": "Terminal 2",
+            "position": {
+                "x": 3.5,
+                "y": -1.5
+            },
+            "gates": [
+                {
+                    "id": "T2_1",
+                    "x": 3.2,
+                    "y": -1.5
+                },
+                {
+                    "id": "T2_2",
+                    "x": 3.8,
+                    "y": -1.5
+                }
+            ],
+            "apron": {
+                "polygon": [
+                    {
+                        "x": 2.8,
+                        "y": -2.0
+                    },
+                    {
+                        "x": 4.2,
+                        "y": -2.0
+                    },
+                    {
+                        "x": 4.2,
+                        "y": -1.0
+                    },
+                    {
+                        "x": 2.8,
+                        "y": -1.0
+                    }
+                ]
+            }
+        }
+    ],
+    "groundRules": {
+        "maxTaxiSpeed": 25,
+        "apronSpeed": 10,
+        "holdShortDistance": 0.05
+    }
+}

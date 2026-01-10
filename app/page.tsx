@@ -33,6 +33,11 @@ export default function Home() {
         <div className="container mx-auto flex justify-between items-center">
           <h1 className="text-xl font-bold text-orange-500">ATC-SIM</h1>
           <div className="space-x-4">
+            <Link href="/airport-editor">
+              <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                AIRPORT EDITOR
+              </button>
+            </Link>
             <Link href={`/simulator?airport=${selectedAirport}`}>
               <button className="bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded">
                 START SIMULATOR

@@ -138,8 +138,11 @@ export class Aircraft {
             if (bearing < 0) bearing += 360;
             this.targetHeading = bearing;
         } else if (this.landingRunway) {
-            const dx = this.landingRunway.x - this.x;
-            const dy = this.landingRunway.y - this.y;
+            // Support both new format (threshold) and legacy format (x/y)
+            const rwyX = this.landingRunway.threshold?.x ?? this.landingRunway.x ?? 0;
+            const rwyY = this.landingRunway.threshold?.y ?? this.landingRunway.y ?? 0;
+            const dx = rwyX - this.x;
+            const dy = rwyY - this.y;
             let bearing = Math.atan2(dy, dx) * 180 / Math.PI;
             bearing = bearing + 90;
             if (bearing < 0) bearing += 360;
@@ -284,7 +287,7 @@ export class Aircraft {
         ctx.fillText(altStr + ' ' + spdStr, px + 10, py + 2);
 
         if (this.landingRunway) {
-            ctx.fillText(this.landingRunway.name, px + 10, py + 14);
+            ctx.fillText(this.landingRunway.name || 'RWY', px + 10, py + 14);
         } else if (this.navFix) {
             ctx.fillText(this.navFix.name, px + 10, py + 14);
         }
